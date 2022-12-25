@@ -12,7 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -20,7 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
@@ -28,13 +26,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.mikeschvedov.pokecarddex.R
@@ -62,7 +57,7 @@ fun CardsListScreen(
                     .align(CenterHorizontally)
             )
             SearchBar(
-                hint = "Search...",
+                hint = "Enter a Pokemon Name...",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -101,7 +96,10 @@ fun SearchBar(
             singleLine = true,
 
             cursorBrush = SolidColor(statusBarBlue),
-            textStyle = TextStyle(color = Color.Black),
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontSize = 20.sp
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(5.dp, CircleShape)
@@ -115,6 +113,7 @@ fun SearchBar(
             Text(
                 text = hint,
                 color = Color.LightGray,
+                fontSize = 20.sp,
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             )
@@ -231,7 +230,7 @@ fun ListEntry(
         modifier = modifier
             .shadow(5.dp, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
-            .height(298.dp)
+            .height(250.dp)
             .width(80.dp)
             .background(
                 Color.Black
@@ -307,13 +306,14 @@ fun SearchButton(
     ) {
         Button(
             onClick = { onSearch() },
-            modifier = Modifier.align(CenterHorizontally)
+            modifier = Modifier
+                .align(CenterHorizontally)
                 .clip(RoundedCornerShape(10.dp))
                 .width(220.dp)
                 .shadow(5.dp, RoundedCornerShape(10.dp))
 
         ) {
-            Text(text = "Search")
+            Text(text = "Search", fontSize = 20.sp, color = Color.White)
         }
     }
 }

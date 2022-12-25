@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Color.Yellow,
+    primary = Color.Blue,
     background = Color(0xFF101010),
     onBackground = Color.White,
     surface = Color(0xFF303030),
@@ -18,10 +18,10 @@ private val DarkColorPalette = darkColors(
 
 private val LightColorPalette = lightColors(
     primary = Color.Blue,
-    background = backgroundYellow,
-    onBackground = Color.Black,
-    surface = Color.White,
-    onSurface = Color.Black
+    background = Color(0xFF101010),
+    onBackground = Color.White,
+    surface = Color(0xFF303030),
+    onSurface = Color.White
 )
 
 
@@ -44,7 +44,7 @@ fun PokeCardDexTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compo
     val systemUiController = rememberSystemUiController()
     if (darkTheme) {
         systemUiController.setSystemBarsColor(
-            Color.Black
+            color = statusBarBlue
         )
     } else {
         systemUiController.setSystemBarsColor(
