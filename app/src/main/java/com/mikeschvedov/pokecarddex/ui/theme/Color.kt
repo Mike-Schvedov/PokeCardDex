@@ -10,6 +10,13 @@ val Teal200 = Color(0xFF03DAC5)
 val LightBlue = Color(0xFFBAC7FF)
 val lightGrey = Color(0xFFAAAAAA)
 
+val backgroundRed = Color(0xFFE69696)
+val statusbarRed =  Color(0xFFCE1313)
+
+val backgroundYellow = Color(0xFF272726)
+val statusBarBlue =  Color(0xFF005EFF)
+
+
 val HPColor = Color(0xFFF5FF00)
 val AtkColor = Color(1f, 0f, 0f, 0.66f)
 val DefColor = Color(0f, 0f, 1f, 0.44f)
