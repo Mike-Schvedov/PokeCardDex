@@ -259,8 +259,6 @@ fun ListEntry(
                 },
             )
 
-
-
             if (viewModel.isLoading.value) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colors.primary,
