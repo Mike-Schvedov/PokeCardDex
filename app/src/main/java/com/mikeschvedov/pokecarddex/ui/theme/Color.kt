@@ -15,7 +15,7 @@ val statusbarRed =  Color(0xFFCE1313)
 
 val backgroundYellow = Color(0xFF272726)
 val statusBarBlue =  Color(0xFF005EFF)
-
+val logoBlue =  Color(0xFF2571F5)
 
 val HPColor = Color(0xFFF5FF00)
 val AtkColor = Color(1f, 0f, 0f, 0.66f)

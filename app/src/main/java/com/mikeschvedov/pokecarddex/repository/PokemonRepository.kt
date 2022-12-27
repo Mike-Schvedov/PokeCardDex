@@ -1,7 +1,10 @@
 package com.mikeschvedov.pokecarddex.repository
 
+import com.mikeschvedov.pokecarddex.data.models.PokemonCardData
 import com.mikeschvedov.pokecarddex.data.remote.PokeApi
+import com.mikeschvedov.pokecarddex.data.remote.response.Pokemon
 import com.mikeschvedov.pokecarddex.data.remote.response.PokemonSearchResponse
+import com.mikeschvedov.pokecarddex.data.remote.response.SingleCardResponse
 import com.mikeschvedov.pokecarddex.utils.NetworkWrapper
 import com.mikeschvedov.ultimate_utility_box.logger.LoggerService
 import dagger.hilt.android.scopes.ActivityScoped
@@ -18,7 +21,7 @@ class PokemonRepository @Inject constructor(
         page: Int,
         orderBy: String
     ): NetworkWrapper<PokemonSearchResponse> {
-        LoggerService.info("Inside the repository, this is the query: $query")
+
         val response = try {
             api.getMatchingCardsList(
                 searchQuery = query,
@@ -27,12 +30,27 @@ class PokemonRepository @Inject constructor(
                 orderBy = orderBy
             )
 
-
         } catch (exception: Exception) {
             return NetworkWrapper.Error(exception.userFriendlyExplanation())
         }
 
         LoggerService.info("This is the response ${response.data.toString()}")
+        return NetworkWrapper.Success(response)
+    }
+
+    suspend fun getCardById(cardId: String): NetworkWrapper<SingleCardResponse> {
+
+        val response = try {
+            api.getCardById(
+                cardId = cardId
+            )
+
+
+
+        } catch (exception: Exception) {
+            return NetworkWrapper.Error(exception.userFriendlyExplanation())
+        }
+        LoggerService.info("This is the response ${response.data.images.large}")
         return NetworkWrapper.Success(response)
     }
 

@@ -17,12 +17,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mikeschvedov.pokecarddex.ui.card_details_screen.CardDetailsScreen
 import com.mikeschvedov.pokecarddex.ui.cards_list_screen.CardsListScreen
 import com.mikeschvedov.pokecarddex.ui.theme.PokeCardDexTheme
 import com.mikeschvedov.pokecarddex.utils.Constants.CARDS_LIST_SCREEN
 import com.mikeschvedov.pokecarddex.utils.Constants.CARD_DETAILS_SCREEN
 import com.mikeschvedov.ultimate_utility_box.logger.LoggerService
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,13 +41,13 @@ class MainActivity : ComponentActivity() {
                         CardsListScreen(navController = navController)
                     }
 
-                    // -------------------------------- Pokemon Details Screen -------------------------------- //
-                    composable("${CARD_DETAILS_SCREEN}/{dominantColor}/{pokemonName}",
+                    // -------------------------------- Pokemon Details Screen ----------------------------- //
+                    composable("${CARD_DETAILS_SCREEN}/{dominantColor}/{cardId}",
                         arguments = listOf(
                             navArgument("dominantColor") {
                                 type = NavType.IntType
                             },
-                            navArgument("pokemonName") {
+                            navArgument("cardId") {
                                 type = NavType.StringType
                             }
                         )
@@ -53,9 +56,17 @@ class MainActivity : ComponentActivity() {
                             val color = it.arguments?.getInt("dominantColor")
                             color?.let { Color(it) } ?: Color.White
                         }
-                        val pokemonName = remember {
-                            it.arguments?.getString("pokemonName")
+                        val cardId = remember {
+                            it.arguments?.getString("cardId")
                         }
+
+                        LoggerService.info("Getting this cardId: $cardId")
+
+                        CardDetailsScreen(
+                            dominantColor = dominantColor,
+                            cardId = cardId ?: "",
+                            navController = navController
+                        )
                     }
                 }
             }

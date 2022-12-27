@@ -2,6 +2,7 @@ package com.mikeschvedov.pokecarddex.ui.cards_list_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,12 +31,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.Coil
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.mikeschvedov.pokecarddex.R
 import com.mikeschvedov.pokecarddex.data.models.PokemonCardData
 import com.mikeschvedov.pokecarddex.ui.theme.*
 import com.mikeschvedov.pokecarddex.utils.Constants.CARD_DETAILS_SCREEN
+import com.mikeschvedov.ultimate_utility_box.logger.LoggerService
 
 @Composable
 fun CardsListScreen(
@@ -65,6 +68,7 @@ fun CardsListScreen(
                 viewModel.queryText.value = inputString
             }
             SearchButton {
+                viewModel.clearList()
                 viewModel.loadPokemonPaginated()
             }
             CardsList(navController = navController)
@@ -134,17 +138,20 @@ fun CardsList(
     val totalCount by remember { viewModel.totalResultCount }
 
     Spacer(modifier = Modifier.height(16.dp))
-    Box(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentAlignment = Center,
-    ) {
-        Text(
-            text = "Matching Results: $totalCount",
-            color = TypeElectric,
-            fontSize = 18.sp
-        )
+    if (totalCount != 0) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Center,
+        ) {
+            Text(
+                text = "$totalCount Results",
+                color = TypeElectric,
+                fontSize = 18.sp
+            )
+        }
     }
+
     Spacer(modifier = Modifier.height(16.dp))
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
@@ -236,26 +243,23 @@ fun ListEntry(
                 Color.Black
             )
             .clickable {
+                LoggerService.info("Passing this card id: ${cardData.cardId}")
                 navController.navigate(
-                    "${CARD_DETAILS_SCREEN}/${dominantColor.toArgb()}/${cardData}"
+                    "${CARD_DETAILS_SCREEN}/${dominantColor.toArgb()}/${cardData.cardId}"
                 )
             }
     ) {
         Column {
-
             val painter = rememberImagePainter(
                 data = cardData.cardImage,
                 builder = {
                     ImageRequest.Builder(LocalContext.current)
                         .data(cardData.cardImage)
-                        .target { image ->
-                            viewModel.calcDominantColor(image) { extractedColor ->
-                                dominantColor = extractedColor
-                            }
-                        }
                         .build()
                 },
             )
+
+
 
             if (viewModel.isLoading.value) {
                 CircularProgressIndicator(
@@ -271,6 +275,9 @@ fun ListEntry(
                         .clip(RoundedCornerShape(10.dp)),
                     contentDescription = cardData.cardId
                 )
+                viewModel.fetchColors(cardData.cardImage, LocalContext.current) {
+                    dominantColor = it
+                }
             }
 
         }
@@ -306,14 +313,19 @@ fun SearchButton(
     ) {
         Button(
             onClick = { onSearch() },
+            colors = ButtonDefaults.buttonColors(backgroundColor = TypeElectric),
             modifier = Modifier
                 .align(CenterHorizontally)
                 .clip(RoundedCornerShape(10.dp))
                 .width(220.dp)
                 .shadow(5.dp, RoundedCornerShape(10.dp))
+                .border(
+                    width = 5.dp,
+                    color = logoBlue
+                )
 
         ) {
-            Text(text = "Search", fontSize = 20.sp, color = Color.White)
+            Text(text = "Search", fontSize = 20.sp, color = logoBlue)
         }
     }
 }
