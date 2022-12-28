@@ -1,8 +1,7 @@
 package com.mikeschvedov.pokecarddex.ui.card_details_screen
 
 import androidx.lifecycle.ViewModel
-import com.mikeschvedov.pokecarddex.data.models.PokemonCardData
-import com.mikeschvedov.pokecarddex.data.remote.response.Pokemon
+import com.mikeschvedov.pokecarddex.data.remote.response.CardData
 import com.mikeschvedov.pokecarddex.data.remote.response.SingleCardResponse
 import com.mikeschvedov.pokecarddex.repository.PokemonRepository
 import com.mikeschvedov.pokecarddex.utils.NetworkWrapper
@@ -18,4 +17,21 @@ class CardDetailsViewModel @Inject constructor(
         return repository.getCardById(cardId)
     }
 
+
+    fun calculatePriceChartingUrl(cardDetails: CardData?): String {
+        //"https://www.pricecharting.com/game/pokemon-neo-genesis/lugia-9"
+        val cardNumber = cardDetails?.number
+        val cardName = cardDetails?.name?.lowercase()
+
+        return "https://www.pricecharting.com/search-products?q=${cardName}+${cardNumber}+&type=prices"
+    }
+
+    fun calculateEBayUrl(cardDetails: CardData?): String {
+        val cardNumber = cardDetails?.number
+        val cardName = cardDetails?.name?.lowercase()
+        val cardSet = cardDetails?.set?.name?.lowercase()
+        val setLimit = cardDetails?.set?.total
+
+        return "https://www.ebay.com/sch/i.html?&_nkw=${cardName}+${cardNumber}/${setLimit}+${cardSet}"
+    }
 }

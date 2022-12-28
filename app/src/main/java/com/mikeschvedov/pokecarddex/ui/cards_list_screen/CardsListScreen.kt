@@ -38,6 +38,7 @@ import com.mikeschvedov.pokecarddex.R
 import com.mikeschvedov.pokecarddex.data.models.PokemonCardData
 import com.mikeschvedov.pokecarddex.ui.theme.*
 import com.mikeschvedov.pokecarddex.utils.Constants.CARD_DETAILS_SCREEN
+import com.mikeschvedov.ultimate_utility_box.logger.Logger
 import com.mikeschvedov.ultimate_utility_box.logger.LoggerService
 
 @Composable
@@ -45,6 +46,12 @@ fun CardsListScreen(
     navController: NavController,
     viewModel: CardsListScreenViewModel = hiltViewModel()
 ) {
+
+    val defaultDominantColor = Color.White
+    var dominantColor by remember {
+        mutableStateOf(defaultDominantColor)
+    }
+
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
@@ -71,7 +78,18 @@ fun CardsListScreen(
                 viewModel.clearList()
                 viewModel.loadPokemonPaginated()
             }
-            CardsList(navController = navController)
+            CardsList(navController = navController){ clickedCard->
+                viewModel.fetchColors(clickedCard.cardImage) {
+                    LoggerService.info("====This is the Clicked Card====")
+                    LoggerService.info("====This is the Clicked Card====")
+                    LoggerService.info("====This is the Clicked Card====")
+                    LoggerService.info("$clickedCard.")
+                    dominantColor = it
+                    navController.navigate(
+                        "${CARD_DETAILS_SCREEN}/${dominantColor.toArgb()}/${clickedCard.cardId}"
+                    )
+                }
+            }
         }
     }
 }
@@ -117,7 +135,7 @@ fun SearchBar(
             Text(
                 text = hint,
                 color = Color.LightGray,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             )
@@ -128,7 +146,8 @@ fun SearchBar(
 @Composable
 fun CardsList(
     navController: NavController,
-    viewModel: CardsListScreenViewModel = hiltViewModel()
+    viewModel: CardsListScreenViewModel = hiltViewModel(),
+    onCardClicked: (PokemonCardData) -> Unit
 ) {
     // States
     val cardsList by remember { viewModel.pokemonList }
@@ -169,7 +188,8 @@ fun CardsList(
             ListRow(
                 rowIndex = it,
                 entries = cardsList,
-                navController = navController
+                navController = navController,
+                onCardClicked = onCardClicked
             )
         }
     }
@@ -196,21 +216,24 @@ fun CardsList(
 fun ListRow(
     rowIndex: Int,
     entries: List<PokemonCardData>,
-    navController: NavController
+    navController: NavController,
+    onCardClicked: (PokemonCardData) -> Unit
 ) {
     Column {
         Row {
             ListEntry(
                 cardData = entries[rowIndex * 2],
                 navController = navController,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onCardClicked = onCardClicked
             )
             Spacer(modifier = Modifier.width(16.dp))
             if (entries.size >= rowIndex * 2 + 2) {
                 ListEntry(
                     cardData = entries[rowIndex * 2 + 1],
                     navController = navController,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    onCardClicked = onCardClicked
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))
@@ -225,12 +248,10 @@ fun ListEntry(
     cardData: PokemonCardData,
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: CardsListScreenViewModel = hiltViewModel()
+    viewModel: CardsListScreenViewModel = hiltViewModel(),
+    onCardClicked: (PokemonCardData) -> Unit
 ) {
-    val defaultDominantColor = Color.White
-    var dominantColor by remember {
-        mutableStateOf(defaultDominantColor)
-    }
+
 
     Box(
         contentAlignment = Center,
@@ -243,10 +264,7 @@ fun ListEntry(
                 Color.Black
             )
             .clickable {
-                LoggerService.info("Passing this card id: ${cardData.cardId}")
-                navController.navigate(
-                    "${CARD_DETAILS_SCREEN}/${dominantColor.toArgb()}/${cardData.cardId}"
-                )
+                onCardClicked(cardData)
             }
     ) {
         Column {
@@ -273,11 +291,8 @@ fun ListEntry(
                         .clip(RoundedCornerShape(10.dp)),
                     contentDescription = cardData.cardId
                 )
-                viewModel.fetchColors(cardData.cardImage, LocalContext.current) {
-                    dominantColor = it
-                }
-            }
 
+            }
         }
     }
 }
@@ -292,13 +307,14 @@ fun RetrySection(
         Text(error, color = Color.Red, fontSize = 18.sp)
         Spacer(modifier = Modifier.height(100.dp))
         Button(
-            onClick = { onRetry() },
+            onClick = onRetry,
             modifier = Modifier.align(CenterHorizontally)
         ) {
             Text(text = "Retry")
         }
     }
 }
+
 
 @Composable
 fun SearchButton(
@@ -307,10 +323,9 @@ fun SearchButton(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-
     ) {
         Button(
-            onClick = { onSearch() },
+            onClick = onSearch,
             colors = ButtonDefaults.buttonColors(backgroundColor = TypeElectric),
             modifier = Modifier
                 .align(CenterHorizontally)
@@ -321,7 +336,6 @@ fun SearchButton(
                     width = 5.dp,
                     color = logoBlue
                 )
-
         ) {
             Text(text = "Search", fontSize = 20.sp, color = logoBlue)
         }

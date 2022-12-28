@@ -13,7 +13,7 @@ val lightGrey = Color(0xFFAAAAAA)
 val backgroundRed = Color(0xFFE69696)
 val statusbarRed =  Color(0xFFCE1313)
 
-val backgroundYellow = Color(0xFF272726)
+val blacklite = Color(0xFF272726)
 val statusBarBlue =  Color(0xFF005EFF)
 val logoBlue =  Color(0xFF2571F5)
 

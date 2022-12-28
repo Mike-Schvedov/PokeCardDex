@@ -1,6 +1,6 @@
 package com.mikeschvedov.pokecarddex.data.remote.response
 
-data class Data(
+data class CardData(
     val artist: String,
     val attacks: List<AttackX>,
     val cardmarket: CardmarketX,

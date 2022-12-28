@@ -1,11 +1,13 @@
 package com.mikeschvedov.pokecarddex.ui.cards_list_screen
 
+import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.palette.graphics.Palette
@@ -18,13 +20,17 @@ import com.mikeschvedov.pokecarddex.utils.Constants.PAGE_SIZE
 import com.mikeschvedov.pokecarddex.utils.NetworkWrapper
 import com.mikeschvedov.ultimate_utility_box.logger.LoggerService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CardsListScreenViewModel @Inject constructor(
-    private val repository: PokemonRepository
-) : ViewModel() {
+    application: Application,
+    private val repository: PokemonRepository,
+) : AndroidViewModel(application) {
+
+    private val context get() = getApplication<Application>()
 
     private var curPage = 1
 
@@ -33,8 +39,6 @@ class CardsListScreenViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
     var totalResultCount = mutableStateOf(0)
-
-    var drawable = mutableStateOf(null)
 
     var queryText = mutableStateOf("")
 
@@ -76,7 +80,7 @@ class CardsListScreenViewModel @Inject constructor(
         }
     }
 
-    fun fetchColors(url: String, context: Context, onCalculated: (Color) -> Unit) {
+    fun fetchColors(url: String, onCalculated: (Color) -> Unit) {
         viewModelScope.launch {
             // Requesting the image using coil's ImageRequest
             val req = ImageRequest.Builder(context)
@@ -96,7 +100,7 @@ class CardsListScreenViewModel @Inject constructor(
         }
     }
 
-    fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
+    private fun calcDominantColor(drawable: Drawable, onFinish: (Color) -> Unit) {
         LoggerService.info("calcDominantColor")
 
         val bmp = (drawable as BitmapDrawable).bitmap.copy(Bitmap.Config.ARGB_8888, true)
