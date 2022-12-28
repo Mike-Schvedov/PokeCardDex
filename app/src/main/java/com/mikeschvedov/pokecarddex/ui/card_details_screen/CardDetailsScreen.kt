@@ -238,12 +238,12 @@ fun CardSetDetails(
             DetailsText(
                 text = "- Set Name -",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 18.sp
             )
             DetailsText(
                 modifier = Modifier.padding(bottom = 16.dp),
                 text = "${cardDetails?.set?.name}",
-                fontSize = 18.sp
+                fontSize = 16.sp
             )
         }
 
@@ -253,12 +253,12 @@ fun CardSetDetails(
             DetailsText(
                 text = "- Release Date -",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 18.sp
             )
             DetailsText(
                 text = "${cardDetails?.set?.releaseDate}",
                 modifier = Modifier.padding(bottom = 16.dp),
-                fontSize = 18.sp
+                fontSize = 16.sp
             )
         }
     }
@@ -290,7 +290,7 @@ fun ExternalLinkSection(
     DetailsText(
         text = "- External Links -",
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        fontSize = 18.sp
     )
     Spacer(modifier = Modifier.height(12.dp))
     HyperlinkText(
