@@ -55,7 +55,6 @@ fun CardDetailsScreen(
         produceState<NetworkWrapper<SingleCardResponse>>(initialValue = NetworkWrapper.Loading()) {
             value = viewModel.getCardById(cardId)
         }.value
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -107,7 +106,6 @@ fun CardDetailsScreen(
         ) {
 
             if (cardDetails is NetworkWrapper.Success) {
-
                 val cardImage = cardDetails.data?.data?.images?.large
                 val painter = rememberImagePainter(
                     data = cardImage,
@@ -219,13 +217,11 @@ fun MainDetailsSection(
     }
 }
 
-
 @Composable
 fun CardSetDetails(
     cardDetails: CardData?,
     modifier: Modifier = Modifier,
 ) {
-
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = modifier
@@ -286,7 +282,7 @@ fun DetailsText(
 fun ExternalLinkSection(
     cardDetails: CardData?,
     viewModel: CardDetailsViewModel = hiltViewModel()
-){
+) {
     DetailsText(
         text = "- External Links -",
         fontWeight = FontWeight.Bold,
@@ -358,10 +354,10 @@ fun HyperlinkText(
         modifier = modifier,
         text = annotatedString,
         onClick = {
-                annotatedString
-                    .getStringAnnotations("URL", it, it)
-                    .firstOrNull()?.let { stringAnnotation ->
-                        uriHandler.openUri(stringAnnotation.item)
-                    }
-    })
+            annotatedString
+                .getStringAnnotations("URL", it, it)
+                .firstOrNull()?.let { stringAnnotation ->
+                    uriHandler.openUri(stringAnnotation.item)
+                }
+        })
 }
